@@ -1,0 +1,12 @@
+============================================================
+               AD PERFORMANCE ANALYSIS REPORT               
+             Generated on: 2025-04-11 15:32:38              
+============================================================
+
+
+------------------ ASSET TYPE PERFORMANCE ------------------
+
+Cost per quote by asset type:
+ad_assettype
+vid     0.435946
+img    11.185380

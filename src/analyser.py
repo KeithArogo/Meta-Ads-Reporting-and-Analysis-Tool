@@ -68,6 +68,9 @@ def analyze_campaign_data(encoded_df, mapping_dir='data/encoded_data', age_map=N
     original_stdout = sys.stdout  # Save original stdout
     timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     report_file_path = f'reports/ad_analysis_report_{timestamp}.txt'
+    image_dir = f'reports/images/{timestamp}'
+    os.makedirs(image_dir, exist_ok=True)
+
 
     with open(report_file_path, 'w') as f:
         sys.stdout = f  # Change stdout to file
@@ -90,10 +93,10 @@ def analyze_campaign_data(encoded_df, mapping_dir='data/encoded_data', age_map=N
         plt.ylabel('Cost (£)')
         plt.xticks(rotation=45)
         plt.tight_layout()
-        plt.savefig('reports/images/cpq_by_asset_type.png')
+        plt.savefig(f'{image_dir}/cpq_by_asset_type.png')
         plt.close()
+        print("Saving images to:", os.path.abspath(image_dir))
 
-        
         # 1. Age Analysis
         print("\n\n" + " AGE GROUP PERFORMANCE ".center(60, '-'))
         age_quotes = decoded_df.groupby('age')['results'].sum().sort_values(ascending=False)
@@ -107,7 +110,7 @@ def analyze_campaign_data(encoded_df, mapping_dir='data/encoded_data', age_map=N
         plt.ylabel('Number of Quotes')
         plt.xticks(rotation=45)
         plt.tight_layout()
-        plt.savefig('reports/images/quotes_by_age.png')
+        plt.savefig(f'{image_dir}/quotes_by_age.png')
         plt.close()
 
         
@@ -129,7 +132,7 @@ def analyze_campaign_data(encoded_df, mapping_dir='data/encoded_data', age_map=N
         plt.ylabel('Cost (£)')
         plt.xticks(rotation=0)
         plt.tight_layout()
-        plt.savefig('reports/images/cpq_by_gender.png')
+        plt.savefig(f'{image_dir}/cpq_by_gender.png')
         plt.close()
 
         gender_quotes.plot(kind='bar', color='coral')
@@ -137,7 +140,7 @@ def analyze_campaign_data(encoded_df, mapping_dir='data/encoded_data', age_map=N
         plt.ylabel('Number of Quotes')
         plt.xticks(rotation=0)
         plt.tight_layout()
-        plt.savefig('reports/images/quotes_by_gender.png')
+        plt.savefig(f'{image_dir}/quotes_by_gender.png')
         plt.close()
 
         # 3. Service Analysis
@@ -154,7 +157,7 @@ def analyze_campaign_data(encoded_df, mapping_dir='data/encoded_data', age_map=N
         plt.ylabel('Cost (£)')
         plt.xticks(rotation=45)
         plt.tight_layout()
-        plt.savefig('reports/images/cpq_by_service.png')
+        plt.savefig(f'{image_dir}/cpq_by_service.png')
         plt.close()
 
         
