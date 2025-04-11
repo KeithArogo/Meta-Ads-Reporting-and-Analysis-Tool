@@ -3,6 +3,7 @@ import os
 import pandas as pd
 from datetime import datetime
 from src.utils import decode_categorical_fast
+import matplotlib.pyplot as plt
 
 def analyze_campaign_data(encoded_df, mapping_dir='data/encoded_data', age_map=None, gender_map=None, reverse_service_map=None):
     """
@@ -83,6 +84,15 @@ def analyze_campaign_data(encoded_df, mapping_dir='data/encoded_data', age_map=N
                           decoded_df.groupby('ad_assettype')['results'].sum())
         print("\nCost per quote by asset type:")
         print(cost_per_quote.sort_values().to_string())
+
+        cost_per_quote.plot(kind='bar', color='skyblue')
+        plt.title('Cost per Quote by Asset Type')
+        plt.ylabel('Cost (£)')
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+        plt.savefig('reports/images/cpq_by_asset_type.png')
+        plt.close()
+
         
         # 1. Age Analysis
         print("\n\n" + " AGE GROUP PERFORMANCE ".center(60, '-'))
@@ -91,6 +101,15 @@ def analyze_campaign_data(encoded_df, mapping_dir='data/encoded_data', age_map=N
             age_quotes.index = age_quotes.index.map(age_map)
         print("\nQuotes by age group:")
         print(age_quotes.to_string())
+
+        age_quotes.plot(kind='bar', color='mediumseagreen')
+        plt.title('Quotes by Age Group')
+        plt.ylabel('Number of Quotes')
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+        plt.savefig('reports/images/quotes_by_age.png')
+        plt.close()
+
         
         # 2. Gender Analysis
         print("\n\n" + " GENDER PERFORMANCE ".center(60, '-'))
@@ -104,7 +123,23 @@ def analyze_campaign_data(encoded_df, mapping_dir='data/encoded_data', age_map=N
         print(gender_quotes.to_string())
         print("\nCost per quote by gender:")
         print(gender_cost.to_string())
-        
+
+        gender_cost.plot(kind='bar', color='slateblue')
+        plt.title('Cost per Quote by Gender')
+        plt.ylabel('Cost (£)')
+        plt.xticks(rotation=0)
+        plt.tight_layout()
+        plt.savefig('reports/images/cpq_by_gender.png')
+        plt.close()
+
+        gender_quotes.plot(kind='bar', color='coral')
+        plt.title('Quotes by Gender')
+        plt.ylabel('Number of Quotes')
+        plt.xticks(rotation=0)
+        plt.tight_layout()
+        plt.savefig('reports/images/quotes_by_gender.png')
+        plt.close()
+
         # 3. Service Analysis
         print("\n\n" + " SERVICE PERFORMANCE ".center(60, '-'))
         service_cost = (decoded_df.groupby('ad_service')['amount_spent_(gbp)'].sum() / 
@@ -113,6 +148,15 @@ def analyze_campaign_data(encoded_df, mapping_dir='data/encoded_data', age_map=N
             service_cost.index = service_cost.index.map(reverse_service_map)
         print("\nCost per quote by service:")
         print(service_cost.sort_values().to_string())
+
+        service_cost.plot(kind='bar', color='orchid')
+        plt.title('Cost per Quote by Service')
+        plt.ylabel('Cost (£)')
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+        plt.savefig('reports/images/cpq_by_service.png')
+        plt.close()
+
         
         # 4. Efficiency Metrics
         total_spent = decoded_df['amount_spent_(gbp)'].sum()
