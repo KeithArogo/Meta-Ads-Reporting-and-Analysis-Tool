@@ -65,7 +65,9 @@ def analyze_campaign_data(encoded_df, mapping_dir='data/encoded_data', age_map=N
 
     # Redirect print output to a file
     original_stdout = sys.stdout  # Save original stdout
-    report_file_path = 'reports/ad_analysis_report.txt'
+    timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    report_file_path = f'reports/ad_analysis_report_{timestamp}.txt'
+
     with open(report_file_path, 'w') as f:
         sys.stdout = f  # Change stdout to file
         
@@ -74,6 +76,13 @@ def analyze_campaign_data(encoded_df, mapping_dir='data/encoded_data', age_map=N
         print(" AD PERFORMANCE ANALYSIS REPORT".center(60))
         print(f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}".center(60))
         print("="*60)
+
+        # 0. Asset Type Analysis
+        print("\n\n" + " ASSET TYPE PERFORMANCE ".center(60, '-'))
+        cost_per_quote = (decoded_df.groupby('ad_assettype')['amount_spent_(gbp)'].sum() / 
+                          decoded_df.groupby('ad_assettype')['results'].sum())
+        print("\nCost per quote by asset type:")
+        print(cost_per_quote.sort_values().to_string())
         
         # 1. Age Analysis
         print("\n\n" + " AGE GROUP PERFORMANCE ".center(60, '-'))

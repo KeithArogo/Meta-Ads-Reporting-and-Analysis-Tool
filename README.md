@@ -1,19 +1,25 @@
 # Online Ad Data Analysis
-Notebook used to analyse Facebook Ad data for a lingerie company.
+Notebook used to analyse Facebook Ad data for a TaskHer.
 
-# Steps
-1. Loading Data from s3
-2. Pre-processing the data:
--   Renamed the columns for intuitive understanding
--   Removed NaN values by computing the median (has drawbacks)
-3. Analysing the data
-4. Test ML models and predict some of the data:
--   How to percieve the predictions - map back the campaigns/ads/add_sets to their original names?
--   The predictions are forecasts for 'purchases' for certain campaigns/ads/add_sets based on the performance of other campaigns/ads/add_sets, are there limitations to this approach? What are some alternatives?
--   Not all campaigns/Ad Sets/Ads are predicted
--   How would the current setup be applicable to a real world application?
+## Steps in function_test.ipynb
+Loading Data from s3 - Input yout bucket, base key and file name.
+Pre-processing the data - Single function that pre-processes the ad data and saves the processed data to the data/raw folder.
+Analysing the data - Single function that analyses the pre-processed data and produces a text report stored in the 'reports' folder.
 
-Reconfigure Data Sets to Include Ad configurations by adding additional columns
+## Next Steps.
+Format Output - include image and txt file storage within folders for all metrics, for easier tracking.
+Considerations when adding any new data:
+Add email functionality to reporting?
+    - Considering temporal factors and how they affect the analysis.
+    - How to systematically incorporate it into the current analysis.
+Consider additional/more roburst Analysis Implementations.
+Machine Learning Pipelines.
+Data and dashboard presentation pipelines.
 
-# Next Steps - Create a Pre-processing pipeline.
-Understand the relation between campaigns, ad sets and ads before proceeding.
+## Current applications of the current implementation.
+Facebook campaign datasets that use the same schema can be immediately be pre-processed & analysed to communicate:
+    - Quote prediction on a 30 pound buddget.
+    - Gender Stats
+    - Cheapest Service Areas
+    - Cheapest Asset type between Images and Video
+Can act as a tool aiding in automatically collating data and insights usefull for periodic reporting (after specific modifications).
