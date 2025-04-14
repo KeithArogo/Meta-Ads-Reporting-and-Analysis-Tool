@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from src.utils import download_files_from_s3, process_campaign_data, clean_string, encode_categorical_fast
+from src.utils import process_campaign_data, clean_string, encode_categorical_fast
 
 def preprocess_campaign_data(df):
     """
