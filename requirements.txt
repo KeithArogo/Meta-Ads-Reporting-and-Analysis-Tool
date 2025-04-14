@@ -3,3 +3,4 @@ pandas
 utils
 scikit-learn
 matplotlib
+numpy

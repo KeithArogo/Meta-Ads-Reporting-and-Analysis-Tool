@@ -1,32 +1,7 @@
 # src/utils.py
-import boto3
+# import boto3
 import os
-
-def download_files_from_s3(bucket_name: str, base_key: str, files: list, local_dir: str = "data/raw"):
-    """
-    Download multiple files from an S3 bucket to a local directory.
-
-    Args:
-        bucket_name (str): Name of the S3 bucket.
-        base_key (str): Path prefix inside the S3 bucket.
-        files (list): List of filenames to download.
-        local_dir (str): Local directory to save the files (default: /tmp).
-    """
-    s3_client = boto3.client('s3')
-
-    os.makedirs(local_dir, exist_ok=True)
-
-    for file in files:
-        s3_key = f"{base_key}{file}"
-        local_path = os.path.join(local_dir, file)
-
-        try:
-            s3_client.download_file(bucket_name, s3_key, local_path)
-            print(f"[INFO] Downloaded {file} to {local_path}")
-        except Exception as e:
-            print(f"[ERROR] Failed to download {file}: {e}")
-
-
+import numpy as np
 import pandas as pd
 
 def process_campaign_data(df):
@@ -200,6 +175,8 @@ def encode_categorical_fast(df, mapping_dir):
     # Return the modified DataFrame (now with encoded categoricals)
     # and original non-string features untouched
     return df, mappings
+
+import numpy as np
 
 def decode_categorical_fast(encoded_df, mapping_dir):
     # Load mappings
