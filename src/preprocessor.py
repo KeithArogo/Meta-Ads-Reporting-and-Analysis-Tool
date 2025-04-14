@@ -13,7 +13,7 @@ def preprocess_campaign_data(df):
     - encoded_df (pd.DataFrame): The processed and encoded DataFrame.
     """
     # Constants for file paths
-    mapping_dir = "/opt/ml/processing/output/mappings"  # Directory for encoding mappings
+    mapping_dir = "/opt/ml/processing/output"  # Directory for encoding mappings
     output_file = "/opt/ml/processing/output/encoded_df.csv"  # Output path for the encoded CSV
 
     # Step 1: Process the campaign data
