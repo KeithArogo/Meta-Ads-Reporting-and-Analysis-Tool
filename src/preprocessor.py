@@ -2,7 +2,58 @@ import os
 import pandas as pd
 from src.utils import download_files_from_s3, process_campaign_data, clean_string, encode_categorical_fast
 
-def preprocess_campaign_data(bucket_name, base_key, files):
+def preprocess_campaign_data(df):
+    """
+    Full preprocessing pipeline for campaign data: process, clean, and encode.
+
+    Args:
+    - df (pd.DataFrame): Raw campaign data as a pandas DataFrame.
+
+    Returns:
+    - encoded_df (pd.DataFrame): The processed and encoded DataFrame.
+    """
+    # Constants for file paths
+    mapping_dir = "/opt/ml/processing/output/mappings"  # Directory for encoding mappings
+    output_file = "/opt/ml/processing/output/encoded_df.csv"  # Output path for the encoded CSV
+
+    # Step 1: Process the campaign data
+    df = process_campaign_data(df)
+
+    # Step 2: Drop the 'Cost per result' column if it exists
+    if 'Cost per result' in df.columns:
+        df = df.drop(columns=['Cost per result'])
+
+    # Step 3: Handle missing values
+    df['Result Type'] = df['Result Type'].fillna('none').replace('', 'none')
+    df['Results'] = df['Results'].fillna(0)
+
+    # Step 4: Clean column names: lowercase + underscores
+    df.columns = (
+        df.columns
+        .str.lower()
+        .str.replace(r'([a-z])([A-Z])', r'\1_\2', regex=True)
+        .str.replace(r'[ \-]+', '_', regex=True)
+    )
+
+    # Step 5: Clean string columns
+    string_cols = df.select_dtypes(include=['object']).columns
+    df[string_cols] = df[string_cols].applymap(clean_string)
+
+    # Step 6: Drop unnecessary columns
+    for col in ['campaign_name', 'ad_set_name', 'ad_name']:
+        if col in df.columns:
+            df = df.drop(columns=[col])
+
+    # Step 7: Encode categorical features
+    os.makedirs(mapping_dir, exist_ok=True)
+    encoded_df, mappings = encode_categorical_fast(df, mapping_dir)
+
+    # Step 8: Save the encoded DataFrame
+    encoded_df.to_csv(output_file, index=False)
+
+    return encoded_df
+
+def preprocess_campaign_data_old(bucket_name, base_key, files):
     """
     Full preprocessing pipeline for campaign data: download, process, clean, and encode.
 
