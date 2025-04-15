@@ -1,6 +1,7 @@
-boto3
+#boto3
 pandas
 utils
 scikit-learn
 matplotlib
 numpy
+seaborn
