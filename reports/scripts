@@ -1,0 +1,60 @@
+============================================================
+               AD PERFORMANCE ANALYSIS REPORT               
+             Generated on: 2025-04-16 13:30:31              
+============================================================
+
+
+------------------ AGE GROUP PERFORMANCE -------------------
+
+Quotes by age group:
+age
+25-34      9811.0
+18-24      8286.0
+35-44      2391.0
+45-54       603.0
+55-64       269.0
+65+         136.0
+unknown      19.0
+
+
+-------------------- GENDER PERFORMANCE --------------------
+
+Quotes by gender:
+gender
+female     13375.0
+male        6323.0
+unknown     1817.0
+
+Cost per quote by gender:
+gender
+female     1.075779
+male       0.339344
+unknown    0.416483
+
+
+------------------- SERVICE PERFORMANCE --------------------
+
+Cost per quote by service:
+ad_service
+aware         0.139412
+gen           0.432923
+crowd         0.518434
+ugc           1.735695
+elec         10.288571
+stw-elec     10.943061
+hack-plum    11.065833
+heat         12.527308
+isl-plum     12.699556
+stw-gas      12.810000
+plum         13.128000
+hack-elec    13.670656
+isl-gas      18.550000
+isl-elec     18.845584
+hack-gas     23.770000
+isl-boil     27.840000
+stw-plum     41.663333
+hack-boil          inf
+stw-boil           inf
+
+
+====================== END OF REPORT =======================

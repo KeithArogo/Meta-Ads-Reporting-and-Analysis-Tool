@@ -27,17 +27,17 @@ def preprocess_campaign_data(df: pd.DataFrame, mapping_dir: str) -> pd.DataFrame
     mapping_dir = mapping_dir # Directory for encoding mappings
     output_file = f"{mapping_dir}/encoded_df.csv"  # Output path for the encoded CSV
 
-    ##
+    # Step 1: Clean column names
     df, ad_split = split_and_clean_columns(df)
 
-    ##
+    # Step 2: Drop and fix rows
     df = drop_and_fix_rows(df, ad_split)
 
-    # Encode categorical features
-    os.makedirs(mapping_dir, exist_ok=True)
-    encoded_df, mappings = encode_categorical_fast(df, mapping_dir)
+    # Encode categorical features - remove this if not needed
+    #os.makedirs(mapping_dir, exist_ok=True)
+    #encoded_df, mappings = encode_categorical_fast(df, mapping_dir)
 
-    # Step 8: Save the encoded DataFrame
-    encoded_df.to_csv(output_file, index=False)
+    # Step 8: Save the encoded DataFrame - remove this if not needed
+    #encoded_df.to_csv(output_file, index=False)
 
-    return encoded_df
+    return df # encoded_df - enable this for ML tasks
