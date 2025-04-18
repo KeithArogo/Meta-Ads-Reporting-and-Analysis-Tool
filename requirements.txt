@@ -5,3 +5,6 @@ scikit-learn
 matplotlib
 numpy
 seaborn
+tabulate
+psycopg2-binary
+sqlalchemy

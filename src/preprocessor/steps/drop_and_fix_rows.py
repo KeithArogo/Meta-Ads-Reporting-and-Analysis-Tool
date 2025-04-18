@@ -83,6 +83,6 @@ def drop_and_fix_rows(df, ad_split):
 
     # Step 5: Clean string columns
     string_cols = df.select_dtypes(include=['object']).columns
-    df[string_cols] = df[string_cols].applymap(clean_strings)
+    df[string_cols] = df[string_cols].map(clean_strings)
     
     return df

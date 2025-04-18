@@ -33,6 +33,12 @@ def preprocess_campaign_data(df: pd.DataFrame, mapping_dir: str) -> pd.DataFrame
     # Step 2: Drop and fix rows
     df = drop_and_fix_rows(df, ad_split)
 
+    # Replace 'ongoing' with a NULL-equivalent or placeholder date
+    df['ends'] = df['ends'].replace('ongoing', pd.NaT)
+
+    # Assuming your DataFrame is named `df`
+    df.rename(columns={"amount_spent_(gbp)": "amount_spent_gbp"}, inplace=True)
+
     # Encode categorical features - remove this if not needed
     #os.makedirs(mapping_dir, exist_ok=True)
     #encoded_df, mappings = encode_categorical_fast(df, mapping_dir)
