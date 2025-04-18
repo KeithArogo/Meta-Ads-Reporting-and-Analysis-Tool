@@ -52,6 +52,55 @@ def cost_per_quote_by_gender(engine):
     """
     return pd.read_sql(query, engine)
 
+def aggregate_performance_by_time(engine):
+    """
+    Aggregates campaign performance by week, month, and year.
+    Returns a dictionary of dataframes with temporal performance metrics.
+    """
+    # Performance by Week
+    query_week = """
+    SELECT
+        campaign_week,
+        SUM(amount_spent_gbp) AS total_spent,
+        SUM(results) AS total_results
+    FROM campaign_data
+    GROUP BY campaign_week
+    ORDER BY campaign_week;
+    """
+    performance_week = pd.read_sql(query_week, engine)
+    
+    # Performance by Month
+    query_month = """
+    SELECT
+        campaign_month,
+        SUM(amount_spent_gbp) AS total_spent,
+        SUM(results) AS total_results
+    FROM campaign_data
+    GROUP BY campaign_month
+    ORDER BY campaign_month;
+    """
+    performance_month = pd.read_sql(query_month, engine)
+
+    # Performance by Year
+    query_year = """
+    SELECT
+        campaign_year,
+        SUM(amount_spent_gbp) AS total_spent,
+        SUM(results) AS total_results
+    FROM campaign_data
+    GROUP BY campaign_year
+    ORDER BY campaign_year;
+    """
+    performance_year = pd.read_sql(query_year, engine)
+
+    # Returning as a dictionary for easy reporting
+    return {
+        'week': performance_week,
+        'month': performance_month,
+        'year': performance_year
+    }
+
+
 def impression_analytics(engine, groupby_cols):
     group = ', '.join(groupby_cols)
     query = f"""
