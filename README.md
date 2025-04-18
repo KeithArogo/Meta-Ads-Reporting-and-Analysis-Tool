@@ -31,3 +31,31 @@ Can act as a tool aiding in automatically collating data and insights usefull fo
 2. Application detects the new data - either by autodetection or by triggering automated periodic checks.
 3. Data is then pre-processed with python code and stored along with it's timestamp
 4. Analytics are then produced and stored
+
+## Main metrics:
+Cost Analystics(already have code for each of this, that I will show you shortly):
+Cost per quote by asset type
+Cost per quote by service
+Quotes by age group
+Quotes by gender
+Cost per quote by gender
+Quotes by age group
+Quotes by gender
+Cost per quote by gender
+
+Impression analytics(I have not written code for this we will need to add it to the metrics function):
+How many impressions / link clicks / quotes came from e.g. men/women - comparing by gender, and comparison by age. 
+
+
+Re-examine the need for pre-processing - done
+Display the weekly CAMPAIGN performance.
+- filter by date, understand the date ranges, earliest period, latest period etc
+- define 'perfomance' metrics - write a modifiable function
+
+
+Compare each metric from the weekly CAMPAIGN performance to last week performance. 
+Also compare weekly CAMPAIGN performance to AVERAGE weekly performance. The average takes into account the whole year's data. 
+I would also want to see performance of specific ads. We don't typically report on the weekly comparison/changes for the ad's but this is something we could do if there was easy capabilities to do so. 
+Things we don't report on weekly but would be nice: 
+How many impressions / link clicks / quotes came from e.g. men/women - comparing by gender, and comparison by age. 
+
