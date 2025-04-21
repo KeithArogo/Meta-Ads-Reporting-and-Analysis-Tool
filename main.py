@@ -1,5 +1,5 @@
 # main.py
-from src.reporter.generate_reports import generate_timed_reports
+from src.reporter.generate_reports import generate_monthly_report
 from src.preprocessor.core import preprocess_campaign_data
 from src.analyser.core import analyze_campaign_data_from_db
 from src.database.save import save_to_postgres  # 🚀 NEW import
@@ -46,7 +46,7 @@ def main():
 
     # Generate monthly and weekly reports
     print("📅 Generating weekly & monthly reports...")
-    generate_timed_reports(engine, output_path)
+    generate_monthly_report(engine, "reports/monthly", 2025, 3)
 
 if __name__ == "__main__":
     main()
