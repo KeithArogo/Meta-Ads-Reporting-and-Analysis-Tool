@@ -7,9 +7,9 @@ Main preprocessing pipeline for campaign data.
 import pandas as pd
 from .steps.split_and_clean_columns import split_and_clean_columns
 from .steps.drop_and_fix_rows import drop_and_fix_rows
-from .steps.encode_categorical import encode_categorical_fast
-from .steps.clean_columns import clean_strings, fill_missing
-from .steps.load_columns import split_campaign_components
+#from .steps.encode_categorical import encode_categorical_fast
+#from .steps.clean_columns import clean_strings, fill_missing
+#from .steps.load_columns import split_campaign_components
 import os
 
 def preprocess_campaign_data(df: pd.DataFrame, mapping_dir: str) -> pd.DataFrame:
@@ -24,7 +24,7 @@ def preprocess_campaign_data(df: pd.DataFrame, mapping_dir: str) -> pd.DataFrame
     """
     # Constants for file paths
     mapping_dir = mapping_dir  # Directory for encoding mappings
-    output_file = f"{mapping_dir}/encoded_df.csv"  # Output path for the encoded CSV
+    #output_file = f"{mapping_dir}/encoded_df.csv"  # Output path for the encoded CSV
 
     # Step 1: Clean column names
     df, ad_split = split_and_clean_columns(df)
@@ -51,6 +51,9 @@ def preprocess_campaign_data(df: pd.DataFrame, mapping_dir: str) -> pd.DataFrame
 
     # Step 4: Rename columns
     df.rename(columns={"amount_spent_(gbp)": "amount_spent_gbp"}, inplace=True)
+    df.rename(columns={"cpc_(cost_per_link_click)": "cost_per_link_click"}, inplace=True)
+    df.rename(columns={"cpm_(cost_per_1,000_impressions)": "cost_per_thousand_impressions"}, inplace=True)
+    df.rename(columns={"ctr_(all)": "click_through_rate"}, inplace=True)
 
     # Encode categorical features (if needed)
     # os.makedirs(mapping_dir, exist_ok=True)
