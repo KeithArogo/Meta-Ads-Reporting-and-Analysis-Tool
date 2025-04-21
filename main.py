@@ -1,5 +1,5 @@
 # main.py
-
+from src.reporter.generate_reports import generate_timed_reports
 from src.preprocessor.core import preprocess_campaign_data
 from src.analyser.core import analyze_campaign_data_from_db
 from src.database.save import save_to_postgres  # 🚀 NEW import
@@ -10,7 +10,7 @@ import pandas as pd
 def main():
     input_path = "local_run/input" # "/opt/ml/processing/input" # "local_run/input"
     output_path = "local_run/output" # "/opt/ml/processing/output" # "local_run/output"
-    img_output_dir = os.path.join(output_path, 'figures')
+    #img_output_dir = os.path.join(output_path, 'figures')
 
     print(f"🚀 Starting analysis. Reading files from {input_path}")
 
@@ -43,6 +43,10 @@ def main():
     #analyze_campaign_data(df, output_path, output_report_path, img_output_dir)
 
     print("✅ Analysis complete!")
+
+    # Generate monthly and weekly reports
+    print("📅 Generating weekly & monthly reports...")
+    generate_timed_reports(engine, output_path)
 
 if __name__ == "__main__":
     main()
