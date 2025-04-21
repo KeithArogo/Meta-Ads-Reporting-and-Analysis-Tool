@@ -4,6 +4,8 @@ from src.preprocessor.core import preprocess_campaign_data
 from src.analyser.core import analyze_campaign_data_from_db
 from src.database.save import save_to_postgres  # 🚀 NEW import
 from sqlalchemy import create_engine
+from datetime import datetime, timedelta
+from src.reporter.generate_reports import generate_weekly_report
 import os
 import pandas as pd
 
@@ -45,8 +47,15 @@ def main():
     print("✅ Analysis complete!")
 
     # Generate monthly and weekly reports
-    print("📅 Generating weekly & monthly reports...")
+    print("📅 Generating monthly reports...")
     generate_monthly_report(engine, "reports/monthly", 2025, 3)
+
+    # Generate weekly report for the last Sunday
+    # Assuming the last Sunday is the last day of the previous week
+    today = datetime.today()
+    last_sunday = today - timedelta(days=today.weekday() + 1)  # Sunday of the previous week
+    print("📅 Generating weekly reports...")
+    generate_weekly_report(engine, "reports/weekly", last_sunday)
 
 if __name__ == "__main__":
     main()

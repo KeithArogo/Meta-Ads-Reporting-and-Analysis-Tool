@@ -1,7 +1,5 @@
 # src/reporter/generate_reports.py
 
-# src/reporter/generate_reports.py
-
 import pandas as pd
 from datetime import datetime, timedelta
 from sqlalchemy import text
@@ -109,38 +107,39 @@ def generate_monthly_report(engine, output_dir, year, month):
     ad_level.to_csv(os.path.join(output_dir, f"{month_name}_ad_level.csv"), index=False)
     print("✅ Monthly report generation complete!")
 
+def fetch_weekly_data(engine, start_date: datetime, end_date: datetime):
+    query = f"""
+    SELECT * FROM campaign_data
+    WHERE starts >= '{start_date.strftime('%Y-%m-%d')}'
+    AND starts < '{end_date.strftime('%Y-%m-%d')}';
+    """
+    print(f"📦 Fetching weekly data: {start_date.date()} ➡️ {end_date.date()}...")
+    return pd.read_sql(query, engine)
 
-def generate_timed_reports_old(engine: Engine, output_dir: str):
+def generate_weekly_report(engine, output_dir, week_start_date: datetime):
     os.makedirs(output_dir, exist_ok=True)
+    
+    week_end_date = week_start_date + timedelta(days=7)
+    df = fetch_weekly_data(engine, week_start_date, week_end_date)
 
-    today = datetime.today()
+    if df.empty:
+        print("🚫 No data found for the selected week.")
+        return
 
-    # Monthly: Generate report for previous month
-    first_day_this_month = today.replace(day=1)
-    last_month_end = first_day_this_month - timedelta(days=1)
-    last_month = last_month_end.month
-    last_month_year = last_month_end.year
+    for col in ['link_clicks']:
+        if col not in df.columns:
+            df[col] = 0
 
-    monthly_query = f"""
-    SELECT * FROM campaign_data
-    WHERE EXTRACT(MONTH FROM starts) = {last_month}
-    AND EXTRACT(YEAR FROM starts) = {last_month_year};
-    """
-    df_month = pd.read_sql(monthly_query, engine)
-    month_file = f"monthly_report_{last_month_year}_{str(last_month).zfill(2)}.csv"
-    df_month.to_csv(os.path.join(output_dir, month_file), index=False)
+    campaign_level = summarize_level(df, ['campaign_name'], 'campaign')
+    adset_level = summarize_level(df, ['campaign_name', 'ad_set_name'], 'ad-set')
+    ad_level = summarize_level(df, ['campaign_name', 'ad_name', 'ad_set_name'], 'ad')
 
-    # Weekly: Generate report for previous week
-    last_sunday = today - timedelta(days=today.weekday() + 1)
-    week_start = last_sunday - timedelta(days=6)
+    week_range_str = f"{week_start_date.strftime('%Y-%m-%d')}_to_{week_end_date.strftime('%Y-%m-%d')}"
+    print(f"💾 Saving report files for {week_range_str}...")
+    campaign_level.to_csv(os.path.join(output_dir, f"{week_range_str}_campaign_level.csv"), index=False)
+    adset_level.to_csv(os.path.join(output_dir, f"{week_range_str}_adset_level.csv"), index=False)
+    ad_level.to_csv(os.path.join(output_dir, f"{week_range_str}_ad_level.csv"), index=False)
+    print("✅ Weekly report generation complete!")
 
-    weekly_query = f"""
-    SELECT * FROM campaign_data
-    WHERE starts::date BETWEEN DATE '{week_start.date()}' AND DATE '{last_sunday.date()}';
-    """
-    df_week = pd.read_sql(weekly_query, engine)
-    week_file = f"weekly_report_{week_start.date()}_to_{last_sunday.date()}.csv"
-    df_week.to_csv(os.path.join(output_dir, week_file), index=False)
 
-    print(f"📅 Monthly report saved as: {month_file}")
-    print(f"🗓️ Weekly report saved as: {week_file}")
+
