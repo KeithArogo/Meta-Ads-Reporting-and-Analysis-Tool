@@ -8,88 +8,106 @@ from sqlalchemy import text
 from sqlalchemy.engine import Engine
 import os
 
-def generate_monthly_report(engine: Engine, output_path, year, month):
-    # Define date range for current and previous month
-    start_date = datetime(year, month, 1)
-    end_date = (start_date + pd.DateOffset(months=1)) - pd.DateOffset(days=1)
-    prev_start = start_date - pd.DateOffset(months=1)
-    prev_end = start_date - pd.DateOffset(days=1)
+# src/reporter/generate_reports.py
 
-    # Ensure output directory exists
-    os.makedirs(output_path, exist_ok=True)
+import pandas as pd
+import os
+from datetime import datetime
 
-    def fetch_data(start, end):
-        query = text(f"""
-            SELECT * FROM campaign_data
-            WHERE starts >= :start AND starts <= :end
-        """)
-        return pd.read_sql(query, engine, params={"start": start, "end": end})
+def fetch_monthly_data(engine, year, month=None):
+    if month is not None:
+        query = f"""
+        SELECT * FROM campaign_data
+        WHERE EXTRACT(YEAR FROM starts) = {year}
+          AND EXTRACT(MONTH FROM starts) = {month};
+        """
+        print(f"📦 Fetching data for {year}-{month:02d}...")
+    else:
+        query = f"""
+        SELECT * FROM campaign_data
+        WHERE EXTRACT(YEAR FROM starts) = {year};
+        """
+        print(f"📦 Fetching data for full year {year}...")
 
-    def preprocess(df):
-        df['amount_spent_gbp'] = pd.to_numeric(df['amount_spent_gbp'], errors='coerce')
-        df['results'] = pd.to_numeric(df['results'], errors='coerce')
-        df['impressions'] = pd.to_numeric(df['impressions'], errors='coerce')
-        df['link_clicks'] = pd.to_numeric(df['link_clicks'], errors='coerce')
+    return pd.read_sql(query, engine)
 
-        df['cost_per_result'] = df['amount_spent_gbp'] / df['results']
-        df['cpm'] = df['amount_spent_gbp'] / (df['impressions'] / 1000)
-        df['cpc'] = df['amount_spent_gbp'] / df['link_clicks']
-        df['link_to_result_ratio'] = df['link_clicks'] / df['results']
-        return df
 
-    def group_and_aggregate(df, group_cols):
-        grouped = df.groupby(group_cols).agg({
-            'amount_spent_gbp': 'sum',
-            'results': 'sum',
-            'impressions': 'sum',
-            'link_clicks': 'sum'
-        }).reset_index()
-        return preprocess(grouped)
+def summarize_level(df, group_cols, level_name):
+    print(f"📊 Summarizing {level_name}-level data...")
+    summary = df.groupby(group_cols).agg(
+        Amount_Spent=('amount_spent_gbp', 'sum'),
+        Results=('results', 'sum'),
+        Impressions=('impressions', 'sum'),
+        Link_Clicks=('link_clicks', 'sum')
+    ).reset_index()
 
-    def compare(df, previous_df):
-        joined = pd.merge(df, previous_df, on=df.columns[0], suffixes=('', '_prev'))
-        for col in ['amount_spent_gbp', 'results', 'cost_per_result', 'impressions', 'cpm', 'link_clicks', 'cpc', 'link_to_result_ratio']:
-            current = joined[col]
-            prev = joined[f"{col}_prev"]
-            joined[f"%_vs_prev_{col}"] = ((current - prev) / prev * 100).round(1)
-        return joined
+    summary['Cost_per_Results'] = summary['Amount_Spent'] / summary['Results'].replace(0, pd.NA)
+    summary['CPM'] = (summary['Amount_Spent'] / summary['Impressions'].replace(0, pd.NA)) * 1000
+    summary['CPC'] = summary['Amount_Spent'] / summary['Link_Clicks'].replace(0, pd.NA)
+    summary['Link_Clicks_to_Results_Ratio'] = (summary['Link_Clicks'] / summary['Results'].replace(0, pd.NA)) * 100
+    return summary
 
-    def benchmark(df, all_2024_df):
-        benchmark_df = group_and_aggregate(all_2024_df, [df.columns[0]])
-        joined = pd.merge(df, benchmark_df, on=df.columns[0], suffixes=('', '_bm'))
-        for col in ['cost_per_result', 'cpm', 'cpc', 'link_to_result_ratio']:
-            current = joined[col]
-            bm = joined[f"{col}_bm"]
-            joined[f"%_vs_benchmark_{col}"] = ((current - bm) / bm * 100).round(1)
-        return joined
+def compute_percent_change(current, previous):
+    print("📈 Calculating percent change vs previous month...")
+    merged = pd.merge(current, previous, on=current.columns[0], suffixes=('', '_prev'), how='left')
+    for col in ['Amount_Spent', 'Results', 'Cost_per_Results', 'Impressions', 'CPM', 'Link_Clicks', 'CPC', 'Link_Clicks_to_Results_Ratio']:
+        if f"{col}_prev" in merged.columns:
+            merged[f"%_change_{col}"] = ((merged[col] - merged[f"{col}_prev"]) / merged[f"{col}_prev"]).replace([pd.NA, float('inf'), -float('inf')], 0) * 100
+    return merged
 
-    # Load datasets
-    this_month_df = fetch_data(start_date, end_date)
-    prev_month_df = fetch_data(prev_start, prev_end)
-    all_2024_df = fetch_data(datetime(2024, 1, 1), end_date)
+def compute_benchmark_comparison(current, benchmark):
+    print("📏 Calculating benchmark comparison...")
+    comp = current.copy()
+    for col in ['Cost_per_Results', 'CPM', 'CPC', 'Link_Clicks_to_Results_Ratio']:
+        if col in benchmark and benchmark[col] != 0:
+            comp[f"%_vs_benchmark_{col}"] = ((comp[col] - benchmark[col]) / benchmark[col]) * 100
+    return comp
 
-    # Campaign-Level
-    this_month_campaign = group_and_aggregate(this_month_df, ['campaign_name'])
-    prev_campaign = group_and_aggregate(prev_month_df, ['campaign_name'])
-    full_campaign = compare(this_month_campaign, prev_campaign)
-    full_campaign = benchmark(full_campaign, all_2024_df)
-    full_campaign.to_csv(f"{output_path}/campaign_level_{year}_{month:02}.csv", index=False)
+def generate_monthly_report(engine, output_dir, year, month):
+    os.makedirs(output_dir, exist_ok=True)
 
-    # Ad-Set-Level
-    this_month_adset = group_and_aggregate(this_month_df, ['ad_set_name'])
-    prev_adset = group_and_aggregate(prev_month_df, ['ad_set_name'])
-    full_adset = compare(this_month_adset, prev_adset)
-    full_adset = benchmark(full_adset, all_2024_df)
-    full_adset.to_csv(f"{output_path}/adset_level_{year}_{month:02}.csv", index=False)
+    df = fetch_monthly_data(engine, year, month)
+    if df.empty:
+        print("🚫 No data found for the selected month.")
+        return
 
-    # Ad-Level
-    this_month_ad = group_and_aggregate(this_month_df, ['ad_name'])
-    prev_ad = group_and_aggregate(prev_month_df, ['ad_name'])
-    full_ad = compare(this_month_ad, prev_ad)
-    full_ad = benchmark(full_ad, all_2024_df)
-    full_ad.to_csv(f"{output_path}/ad_level_{year}_{month:02}.csv", index=False)
+    # Add fallback columns if missing
+    for col in ['link_clicks']:
+        if col not in df.columns:
+            df[col] = 0
 
-    print(f"✅ Reports generated for {start_date.strftime('%B %Y')} and saved to {output_path}")
+    # Level 1: Campaign
+    campaign_level = summarize_level(df, ['campaign_name'], 'campaign')
+
+    # Level 2: Ad-set
+    adset_level = summarize_level(df, ['campaign_name', 'ad_set_name'], 'ad-set')
+
+    # Level 3: Ad
+    ad_level = summarize_level(df, ['campaign_name', 'ad_name', 'ad_set_name'], 'ad')
+
+    # Fetch previous month data
+    prev_month = month - 1 if month > 1 else 12
+    prev_year = year if month > 1 else year - 1
+    prev_df = fetch_monthly_data(engine, prev_year, prev_month)
+
+    if not prev_df.empty:
+        prev_campaign = summarize_level(prev_df, ['campaign_name'], 'campaign-prev')
+        campaign_level = compute_percent_change(campaign_level, prev_campaign)
+
+    # Benchmarks (average for current year)
+    full_year_df = fetch_monthly_data(engine, year, month=None)
+    if not full_year_df.empty:
+        benchmark = summarize_level(full_year_df, ['campaign_name'], 'campaign-benchmark')
+        avg_benchmark = benchmark[['Cost_per_Results', 'CPM', 'CPC', 'Link_Clicks_to_Results_Ratio']].mean()
+        campaign_level = compute_benchmark_comparison(campaign_level, avg_benchmark)
+
+    # Save outputs
+    month_name = datetime(year, month, 1).strftime('%B').upper()
+    print(f"💾 Saving report files for {month_name}...")
+    campaign_level.to_csv(os.path.join(output_dir, f"{month_name}_campaign_level.csv"), index=False)
+    adset_level.to_csv(os.path.join(output_dir, f"{month_name}_adset_level.csv"), index=False)
+    ad_level.to_csv(os.path.join(output_dir, f"{month_name}_ad_level.csv"), index=False)
+    print("✅ Monthly report generation complete!")
 
 
 def generate_timed_reports_old(engine: Engine, output_dir: str):
