@@ -10,14 +10,17 @@ import os
 import pandas as pd
 
 def main():
-    input_path = "local_run/input" # "/opt/ml/processing/input" # "local_run/input"
-    output_path = "local_run/output" # "/opt/ml/processing/output" # "local_run/output"
+    monthly_input_path = "data/monthly_data" # "/opt/ml/processing/input" # "local_run/input"
+    monthly_output_path = "analysis/monthly" # "/opt/ml/processing/output" # "local_run/output"
     #img_output_dir = os.path.join(output_path, 'figures')
 
-    print(f"🚀 Starting analysis. Reading files from {input_path}")
+    weekly_input_path = "data/weekly_data" # "/opt/ml/processing/input" # "local_run/input"
+    weekly_output_path = "analysis/weekly" # "/opt/ml/processing/output" # "local_run/output"
+
+    print(f"🚀 Starting analysis. Reading files from {monthly_input_path}")
 
     # Load all CSV files and concatenate them
-    input_files = [f for f in os.listdir(input_path) if f.endswith('.csv')]
+    input_files = [f for f in os.listdir(monthly_input_path) if f.endswith('.csv')]
     if not input_files:
         raise FileNotFoundError("No CSV files found in the input path.")
 
@@ -27,7 +30,7 @@ def main():
     dfs = []
 
     for file in input_files:
-        file_path = os.path.join(input_path, file)
+        file_path = os.path.join(monthly_input_path, file)
         df = pd.read_csv(file_path)
         dfs.append(df)
         print(f"   ✅ Loaded {file} with {len(df)} rows")
@@ -38,9 +41,9 @@ def main():
 
     # Now use combined_df for your further processing
 
-    # Run preprocessing
+    # Run preprocessing ()
     print("🧼 Preprocessing the data...")
-    df = preprocess_campaign_data(combined_df, output_path)
+    df = preprocess_campaign_data(combined_df, monthly_output_path)
 
     # Save to PostgreSQL
     print("💾 Saving to database...")

@@ -16,7 +16,7 @@ def save_to_postgres(df):
         engine = create_engine(f'postgresql+psycopg2://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}')
         
         print("📤 Uploading data to campaign_data table...")
-        df.to_sql('campaign_data', engine, if_exists='append', index=False)
+        df.to_sql('monthly_campaign_data', engine, if_exists='append', index=False)
         print("✅ Data successfully uploaded to PostgreSQL.")
     
     except Exception as e:
