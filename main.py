@@ -16,17 +16,31 @@ def main():
 
     print(f"🚀 Starting analysis. Reading files from {input_path}")
 
-    # Load the dataset
+    # Load all CSV files and concatenate them
     input_files = [f for f in os.listdir(input_path) if f.endswith('.csv')]
     if not input_files:
         raise FileNotFoundError("No CSV files found in the input path.")
 
-    file_path = os.path.join(input_path, input_files[0])
-    df = pd.read_csv(file_path)
+    print(f"📦 Found {len(input_files)} CSV files. Loading and combining them...")
+
+    # Create a list to hold all DataFrames 
+    dfs = []
+
+    for file in input_files:
+        file_path = os.path.join(input_path, file)
+        df = pd.read_csv(file_path)
+        dfs.append(df)
+        print(f"   ✅ Loaded {file} with {len(df)} rows")
+
+    # Concatenate all DataFrames
+    combined_df = pd.concat(dfs, ignore_index=True)
+    print(f"🎉 Successfully combined all files. Total rows: {len(combined_df)}")
+
+    # Now use combined_df for your further processing
 
     # Run preprocessing
     print("🧼 Preprocessing the data...")
-    df = preprocess_campaign_data(df, output_path)
+    df = preprocess_campaign_data(combined_df, output_path)
 
     # Save to PostgreSQL
     print("💾 Saving to database...")

@@ -36,8 +36,12 @@ def preprocess_campaign_data(df: pd.DataFrame, mapping_dir: str) -> pd.DataFrame
     df['ends'] = df['ends'].replace('ongoing', pd.NaT)
 
     # Convert 'starts' and 'ends' columns to datetime
-    df['starts'] = pd.to_datetime(df['starts'], errors='coerce')
-    df['ends'] = pd.to_datetime(df['ends'], errors='coerce')
+    df['starts'] = pd.to_datetime(df['starts'], errors='coerce', format='%Y-%m-%d')
+    df['ends'] = pd.to_datetime(df['ends'], errors='coerce', format='%Y-%m-%d')
+
+    # Convert 'starts' and 'ends' columns to datetime
+    df['reporting_starts'] = pd.to_datetime(df['reporting_starts'], errors='coerce', format='%Y-%m-%d')
+    df['reporting_ends'] = pd.to_datetime(df['reporting_ends'], errors='coerce', format='%Y-%m-%d')
 
     # Step 3: Add temporal features (week, month, year)
     df['campaign_week'] = df['starts'].dt.isocalendar().week
