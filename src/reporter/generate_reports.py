@@ -13,7 +13,7 @@ def fetch_monthly_data_old(engine, year, month=None):
         last_day = calendar.monthrange(year, month)[1]
         cutoff_date = datetime(year, month, last_day, 23, 59, 59)
         query = f"""
-        SELECT * FROM campaign_data
+        SELECT * FROM monthly_campaign_data
         WHERE starts <= TIMESTAMP '{cutoff_date.strftime('%Y-%m-%d %H:%M:%S')}';
         """
         print(f"📦 Fetching data up to and including {year}-{month:02d}...")
@@ -22,7 +22,7 @@ def fetch_monthly_data_old(engine, year, month=None):
         start_date = datetime(year, 1, 1)
         end_date = datetime(year, 12, 31, 23, 59, 59)
         query = f"""
-        SELECT * FROM campaign_data
+        SELECT * FROM monthly_campaign_data
         WHERE starts BETWEEN TIMESTAMP '{start_date.strftime('%Y-%m-%d %H:%M:%S')}'
                         AND TIMESTAMP '{end_date.strftime('%Y-%m-%d %H:%M:%S')}';
         """
@@ -33,14 +33,14 @@ def fetch_monthly_data_old(engine, year, month=None):
 def fetch_monthly_data(engine, year, month=None):
     if month is not None:
         query = f"""
-        SELECT * FROM campaign_data
+        SELECT * FROM monthly_campaign_data
         WHERE EXTRACT(YEAR FROM reporting_starts) = {year}
           AND EXTRACT(MONTH FROM reporting_starts) = {month};
         """
         print(f"📦 Fetching data for {year}-{month:02d}...")
     else:
         query = f"""
-        SELECT * FROM campaign_data
+        SELECT * FROM monthly_campaign_data
         WHERE EXTRACT(YEAR FROM reporting_starts) = {year};
         """
         print(f"📦 Fetching data for full year {year}...")
@@ -127,9 +127,9 @@ def generate_monthly_report(engine, output_dir, year, month):
 
 def fetch_weekly_data(engine, start_date: datetime, end_date: datetime):
     query = f"""
-    SELECT * FROM campaign_data
-    WHERE starts >= '{start_date.strftime('%Y-%m-%d')}'
-    AND starts < '{end_date.strftime('%Y-%m-%d')}';
+    SELECT * FROM weekly_campaign_data
+    WHERE reporting_starts >= '{start_date.strftime('%Y-%m-%d')}'
+    AND reporting_starts < '{end_date.strftime('%Y-%m-%d')}';
     """
     print(f"📦 Fetching weekly data: {start_date.date()} ➡️ {end_date.date()}...")
     return pd.read_sql(query, engine)
