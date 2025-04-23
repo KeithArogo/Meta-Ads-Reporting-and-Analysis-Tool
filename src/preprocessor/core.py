@@ -23,7 +23,7 @@ def preprocess_campaign_data(df: pd.DataFrame, mapping_dir: str) -> pd.DataFrame
     - df (pd.DataFrame): The processed DataFrame, including temporal features.
     """
     # Constants for file paths
-    mapping_dir = mapping_dir  # Directory for encoding mappings
+    # mapping_dir = mapping_dir  # Directory for encoding mappings
     #output_file = f"{mapping_dir}/encoded_df.csv"  # Output path for the encoded CSV
 
     # Step 1: Clean column names
@@ -36,12 +36,12 @@ def preprocess_campaign_data(df: pd.DataFrame, mapping_dir: str) -> pd.DataFrame
     df['ends'] = df['ends'].replace('ongoing', pd.NaT)
 
     # Convert 'starts' and 'ends' columns to datetime
-    df['starts'] = pd.to_datetime(df['starts'], errors='coerce', format='%Y-%m-%d')
-    df['ends'] = pd.to_datetime(df['ends'], errors='coerce', format='%Y-%m-%d')
+    df['starts'] = pd.to_datetime(df['starts'], format='mixed', dayfirst=True)
+    df['ends'] = pd.to_datetime(df['ends'], format='mixed', dayfirst=True)
 
     # Convert 'starts' and 'ends' columns to datetime
-    df['reporting_starts'] = pd.to_datetime(df['reporting_starts'], errors='coerce', format='%Y-%m-%d')
-    df['reporting_ends'] = pd.to_datetime(df['reporting_ends'], errors='coerce', format='%Y-%m-%d')
+    df['reporting_starts'] = pd.to_datetime(df['reporting_starts'], format='mixed', dayfirst=True)
+    df['reporting_ends'] = pd.to_datetime(df['reporting_ends'], format='mixed', dayfirst=True)
 
     # Step 3: Add temporal features (week, month, year)
     df['campaign_week'] = df['starts'].dt.isocalendar().week

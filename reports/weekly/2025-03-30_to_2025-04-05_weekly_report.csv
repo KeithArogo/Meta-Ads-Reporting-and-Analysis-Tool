@@ -1,0 +1,10 @@
+level,campaign_name,Amount_Spent,Results,Impressions,Link_Clicks,Cost_per_Results,CPM,CPC,Link_Clicks_to_Results_Ratio,ad_set_name,ad_name
+===== CAMPAIGN LEVEL PERFORMANCE =====,,,,,,,,,,,
+Campaign,ldn|02.04|mid|rtg|quote|all-warm,148.93,16.0,17131,101.0,9.308125,8.693596404179557,1.4745544554455445,631.25,,
+===== AD SET LEVEL PERFORMANCE =====,,,,,,,,,,,
+Ad Set,ldn|02.04|mid|rtg|quote|all-warm,148.93,16.0,17131,101.0,9.308125,8.693596404179557,1.4745544554455445,631.25,ldn|all|18-45|rtg|igfollowers&engagers|ig|all,
+===== AD LEVEL PERFORMANCE =====,,,,,,,,,,,
+Ad,ldn|02.04|mid|rtg|quote|all-warm,12.61,6.0,1307,14.0,2.1016666666666666,9.648048967100229,0.9007142857142857,233.33333333333334,ldn|all|18-45|rtg|igfollowers&engagers|ig|all,elec|ifd-stor-rl|img|purple_cta_bulb
+Ad,ldn|02.04|mid|rtg|quote|all-warm,10.42,0.0,839,3.0,,12.419547079856972,3.473333333333333,,ldn|all|18-45|rtg|igfollowers&engagers|ig|all,gen|ifd-stor-rl|vid|introvideo
+Ad,ldn|02.04|mid|rtg|quote|all-warm,10.0,0.0,1224,4.0,,8.169934640522877,2.5,,ldn|all|18-45|rtg|igfollowers&engagers|ig|all,heat|ifd-stor-rl|img|cta_fixingheating
+Ad,ldn|02.04|mid|rtg|quote|all-warm,115.9,10.0,13761,80.0,11.59,8.422353026669573,1.44875,800.0,ldn|all|18-45|rtg|igfollowers&engagers|ig|all,plum||ifd-stor-rl|img|sitting

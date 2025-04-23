@@ -8,3 +8,4 @@ seaborn
 tabulate
 psycopg2-binary
 sqlalchemy
+xlsxwriter
