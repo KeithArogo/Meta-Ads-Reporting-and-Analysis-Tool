@@ -241,3 +241,17 @@ def generate_weekly_report(engine, output_dir, week_start_date: datetime):
         print(f"❌ Error generating weekly report: {str(e)}")
         raise
 
+def get_existing_report_ranges(engine, table_name):
+    query = f"""
+    SELECT DISTINCT reporting_starts, reporting_ends FROM {table_name}
+    """
+    with engine.connect() as conn:
+        result = conn.execute(text(query)).fetchall()
+    return {(row[0], row[1]) for row in result}
+
+def is_new_report(df, existing_ranges):
+    if df.empty:
+        return False
+    start = pd.to_datetime(df['reporting_starts'].iloc[0])
+    end = pd.to_datetime(df['reporting_ends'].iloc[0])
+    return (start, end) not in existing_ranges
