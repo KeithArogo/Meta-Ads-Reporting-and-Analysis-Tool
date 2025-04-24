@@ -2,14 +2,19 @@
 
 import pandas as pd
 from sqlalchemy import create_engine
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 def save_to_postgres(df, is_weekly=False):
-    # Database connection details (👀 load securely in production)
-    db_user = 'keith'
-    db_password = 'ArrestedDevelopment'
-    db_host = 'metaad-campaign-db.cl4qg28aywnx.eu-north-1.rds.amazonaws.com'
-    db_port = '5432'
-    db_name = 'metaads'
+    # Get credentials from environment variables
+    db_user = os.getenv('DB_USER')
+    db_password = os.getenv('DB_PASSWORD')
+    db_host = os.getenv('DB_HOST')
+    db_port = os.getenv('DB_PORT')
+    db_name = os.getenv('DB_NAME')
 
     table_name = 'weekly_campaign_data' if is_weekly else 'monthly_campaign_data'
 
