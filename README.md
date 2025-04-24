@@ -1,18 +1,19 @@
-# 📈 META Ad Data Analysis Platform
 
-Welcome to the **Meta Ad Data Analysis Platform**—a cloud-powered pipeline that transforms raw META (Facebook/Instagram) ad exports into structured insights, slick visuals, and business-ready reports.
+# 📈 META Ads Reporting and Analysis Tool
+
+**Meta Ads Reporting and Analysis Tool**—a cloud-powered pipeline that transforms raw META (Facebook/Instagram) ad exports into structured insights and business-ready reports.
 
 ---
 
 ## 🚀 What’s This Platform For?
 
-This platform is built to help marketers, analysts, and growth hackers extract **meaningful insights** from recurring ad campaign data. Whether you’re tracking *quote rates*, *cost-per-result*, or *Instagram profile visits*, this end-to-end pipeline handles it all—automatically.
+This platform is built to help marketers and analysts extract **meaningful insights** from recurring ad campaign data. Whether you’re tracking *quote rates*, *cost-per-result*, or *Instagram profile visits*, this end-to-end pipeline handles it all—automatically.
 
 Use it to:
 - 💡 Understand asset-level ad performance across time.
 - 📊 Compare campaigns via SQL-powered analysis.
 - 🧺 Store structured datasets in a cloud-based RDS.
-- 📁 Generate daily/weekly/monthly reports for decision-makers.
+- 📁 Generate weekly/monthly reports for decision-makers.
 
 ---
 
@@ -31,7 +32,7 @@ META Ads Export (.csv)
         ⬇
 📤 SQL-Based Analysis + Reports
         ⬇
-📝 Text & PNG Reports (with timestamps)
+📝 CSV Reports (with timestamps)
 ```
 
 ---
@@ -48,25 +49,47 @@ META Ads Export (.csv)
 
 ---
 
+## 💻 Local Usage Option
+
+You can also run the pipeline **locally**—no cloud setup needed.
+
+Just make sure:
+- Your `data/` folder contains valid `weekly_data/` and `monthly_data/` CSVs matching the expected schema.
+- You’ve installed all dependencies using `requirements.txt`.
+- You have a running PostgreSQL instance (local or remote) and it’s connected properly.
+
+Then, trigger the pipeline manually with:
+```bash
+python main.py
+```
+
+All analysis and reports will be generated exactly like they would in the cloud setup.
+
+---
+
 ## 📦 Project Structure
 
 ```
-📁 Ad-Data-Analysis-Lingerie/
-├── data/                   # Local data folder (optional)
-├── models/                 # Model-related files (future use)
-├── reports/                # Generated .txt + .png reports
-├── scripts/                # Lambda + trigger scripts
+📁 Meta-Ads-Reporting-and-Analysis-Tool/
+├── analysis/                  # Local data folder (optional)
+├── data/
+│   ├── monthly_data/          # Monthly data in CSV format
+│   └── weekly_data/           # Weekly data in CSV format
+├── reports/                   # Generated .txt + .png reports
 ├── src/
 │   ├── preprocessor/
-│   │   ├── core.py         # Main orchestrator
-│   │   └── steps/          # Modular cleaning functions
-│   └── analyser/
-│       ├── core.py         # SQL analysis orchestration
-│       └── sql_metrics.py  # Defined SQL-based metrics
-├── function_test.ipynb     # Manual test harness
-├── notebook_taskher_analysis.ipynb # EDA + experimentation
-├── requirements.txt        # Pip dependencies
-└── main.py                 # Pipeline entry point
+│   │   ├── core.py            # Main orchestrator
+│   │   └── steps/             # Modular cleaning functions
+│   ├── analyser/
+│   │   ├── core.py            # SQL analysis orchestration
+│   │   └── sql_metrics.py     # Defined SQL-based metrics
+│   ├── database/
+│   │   └── save.py            # Database operations
+│   └── reporter/
+│       └── generate_reports.py # Report generation logic
+├── EDA.ipynb                  # EDA + experimentation
+├── requirements.txt           # Pip dependencies
+└── main.py                    # Pipeline entry point
 ```
 
 ---
@@ -92,8 +115,8 @@ META Ads Export (.csv)
    Either create a `.env` file or configure AWS credentials + DB URI manually in your code.
 
 4. **Trigger the pipeline:**
-   - **Manual:** Run `main.py` after placing raw `.csv` in your S3 bucket.
-   - **Auto:** Use your Lambda trigger (already preconfigured) to auto-process uploads.
+   - **Manual:** Run `main.py` after placing raw `.csv` in your S3 bucket or local `data/` folder.
+   - **Auto (AWS):** Use your Lambda trigger (already preconfigured) to auto-process uploads.
 
 ---
 
@@ -136,4 +159,4 @@ Pull requests are welcome! If you’ve got new metrics, visualization templates,
 
 ## 🧙‍♂️ Maintainer
 
-Crafted by [Keith Arogo Owino](https://keitharogo.github.io/)  
+Crafted by [Keith Arogo Owino](https://keitharogo.github.io/)
