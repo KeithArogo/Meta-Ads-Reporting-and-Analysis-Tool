@@ -1,10 +1,12 @@
+# main.py
+
 import os
 import pandas as pd
 from datetime import datetime, timedelta
 from sqlalchemy import create_engine, text
 from src.reporter.generate_reports import generate_monthly_report, generate_weekly_report, get_existing_report_ranges, is_new_report
 from src.preprocessor.core import preprocess_campaign_data
-from src.analyser.core import analyze_campaign_data_from_db
+#from src.analyser.core import analyze_campaign_data_from_db
 from src.database.save import save_to_postgres
 from dotenv import load_dotenv
 

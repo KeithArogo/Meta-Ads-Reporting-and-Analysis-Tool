@@ -1,11 +1,9 @@
 level,campaign_name,Amount_Spent,Results,Impressions,Link_Clicks,Cost_per_Results,CPM,CPC,Link_Clicks_to_Results_Ratio,ad_set_name,ad_name
 ===== CAMPAIGN LEVEL PERFORMANCE =====,,,,,,,,,,,
-Campaign,ldn|02.04|mid|rtg|quote|all-warm,228.49,22.0,23789,145.0,10.385909090909092,9.604859388793141,1.575793103448276,659.0909090909091,,
+Campaign,ldn|02.04|mid|rtg|quote|all-warm,197.16,22.0,20334,133.0,8.961818181818181,9.696075538506934,1.482406015037594,604.5454545454546,,
 ===== AD SET LEVEL PERFORMANCE =====,,,,,,,,,,,
-Ad Set,ldn|02.04|mid|rtg|quote|all-warm,228.49,22.0,23789,145.0,10.385909090909092,9.604859388793141,1.575793103448276,659.0909090909091,ldn|all|18-45|rtg|igfollowers&engagers|ig|all,
+Ad Set,ldn|02.04|mid|rtg|quote|all-warm,197.16,22.0,20334,133.0,8.961818181818181,9.696075538506934,1.482406015037594,604.5454545454546,ldn|all|18-45|rtg|igfollowers&engagers|ig|all,
 ===== AD LEVEL PERFORMANCE =====,,,,,,,,,,,
-Ad,ldn|02.04|mid|rtg|quote|all-warm,114.73,14.0,12828,84.0,8.195,8.9437168693483,1.3658333333333335,600.0,ldn|all|18-45|rtg|igfollowers&engagers|ig|all,elec|ifd-stor-rl|img|purple_cta_bulb
-Ad,ldn|02.04|mid|rtg|quote|all-warm,0.52,0.0,37,0.0,,14.054054054054054,,,ldn|all|18-45|rtg|igfollowers&engagers|ig|all,gen|ifd-stor-rl|vid|introvideo
-Ad,ldn|02.04|mid|rtg|quote|all-warm,5.27,0.0,615,2.0,,8.56910569105691,2.635,,ldn|all|18-45|rtg|igfollowers&engagers|ig|all,heat|ifd-stor-rl|img|cta_fixingheating
-Ad,ldn|02.04|mid|rtg|quote|all-warm,48.010000000000005,5.0,5688,20.0,9.602,8.44057665260197,2.4005,400.0,ldn|all|18-45|rtg|igfollowers&engagers|ig|all,plum||ifd-stor-rl|img|sitting
-Ad,ldn|02.04|mid|rtg|quote|all-warm,59.96,3.0,4621,39.0,19.986666666666668,12.975546418524129,1.5374358974358975,1300.0,ldn|all|18-45|rtg|igfollowers&engagers|ig|all,ugc|ifd-stor-rl|vid|clip2
+Ad,ldn|02.04|mid|rtg|quote|all-warm,109.2,14.0,12017,82.0,7.8,9.08712657069152,1.3317073170731708,585.7142857142857,ldn|all|18-45|rtg|igfollowers&engagers|ig|all,elec|ifd-stor-rl|img|purple_cta_bulb
+Ad,ldn|02.04|mid|rtg|quote|all-warm,40.77,5.0,4720,16.0,8.154,8.63771186440678,2.548125,320.0,ldn|all|18-45|rtg|igfollowers&engagers|ig|all,plum||ifd-stor-rl|img|sitting
+Ad,ldn|02.04|mid|rtg|quote|all-warm,47.19,3.0,3597,35.0,15.729999999999999,13.119266055045872,1.3482857142857143,1166.6666666666665,ldn|all|18-45|rtg|igfollowers&engagers|ig|all,ugc|ifd-stor-rl|vid|clip2

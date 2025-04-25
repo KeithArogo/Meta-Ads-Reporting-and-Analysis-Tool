@@ -1,10 +1,8 @@
 level,campaign_name,Amount_Spent,Results,Impressions,Link_Clicks,Cost_per_Results,CPM,CPC,Link_Clicks_to_Results_Ratio,ad_set_name,ad_name
 ===== CAMPAIGN LEVEL PERFORMANCE =====,,,,,,,,,,,
-Campaign,ldn|02.04|mid|rtg|quote|all-warm,231.34,22.0,26610,156.0,10.515454545454546,8.693724163848177,1.482948717948718,709.0909090909091,,
+Campaign,ldn|02.04|mid|rtg|quote|all-warm,200.68,22.0,22892,142.0,9.121818181818183,8.766381268565437,1.4132394366197183,645.4545454545454,,
 ===== AD SET LEVEL PERFORMANCE =====,,,,,,,,,,,
-Ad Set,ldn|02.04|mid|rtg|quote|all-warm,231.34,22.0,26610,156.0,10.515454545454546,8.693724163848177,1.482948717948718,709.0909090909091,ldn|all|18-45|rtg|igfollowers&engagers|ig|all,
+Ad Set,ldn|02.04|mid|rtg|quote|all-warm,200.68,22.0,22892,142.0,9.121818181818183,8.766381268565437,1.4132394366197183,645.4545454545454,ldn|all|18-45|rtg|igfollowers&engagers|ig|all,
 ===== AD LEVEL PERFORMANCE =====,,,,,,,,,,,
-Ad,ldn|02.04|mid|rtg|quote|all-warm,107.71,11.0,12117,74.0,9.791818181818181,8.88916398448461,1.4555405405405404,672.7272727272727,ldn|all|18-45|rtg|igfollowers&engagers|ig|all,elec|ifd-stor-rl|img|purple_cta_bulb
-Ad,ldn|02.04|mid|rtg|quote|all-warm,0.78,0.0,51,0.0,,15.294117647058824,,,ldn|all|18-45|rtg|igfollowers&engagers|ig|all,gen|ifd-stor-rl|vid|introvideo
-Ad,ldn|02.04|mid|rtg|quote|all-warm,6.819999999999999,0.0,785,3.0,,8.687898089171973,2.273333333333333,,ldn|all|18-45|rtg|igfollowers&engagers|ig|all,heat|ifd-stor-rl|img|cta_fixingheating
-Ad,ldn|02.04|mid|rtg|quote|all-warm,116.03,11.0,13657,79.0,10.548181818181819,8.496009372482975,1.4687341772151898,718.1818181818181,ldn|all|18-45|rtg|igfollowers&engagers|ig|all,plum||ifd-stor-rl|img|sitting
+Ad,ldn|02.04|mid|rtg|quote|all-warm,98.61,11.0,10984,70.0,8.964545454545455,8.97760378732702,1.4087142857142858,636.3636363636364,ldn|all|18-45|rtg|igfollowers&engagers|ig|all,elec|ifd-stor-rl|img|purple_cta_bulb
+Ad,ldn|02.04|mid|rtg|quote|all-warm,102.07,11.0,11908,72.0,9.27909090909091,8.571548538797446,1.417638888888889,654.5454545454546,ldn|all|18-45|rtg|igfollowers&engagers|ig|all,plum||ifd-stor-rl|img|sitting

@@ -13,13 +13,15 @@ def fetch_monthly_data(engine, year, month=None):
         query = f"""
         SELECT * FROM monthly_campaign_data
         WHERE EXTRACT(YEAR FROM reporting_starts) = {year}
-          AND EXTRACT(MONTH FROM reporting_starts) = {month};
+          AND EXTRACT(MONTH FROM reporting_starts) = {month}
+          AND results > 0;
         """
         print(f"📦 Fetching data for {year}-{month:02d}...")
     else:
         query = f"""
         SELECT * FROM monthly_campaign_data
-        WHERE EXTRACT(YEAR FROM reporting_starts) = {year};
+        WHERE EXTRACT(YEAR FROM reporting_starts) = {year}
+          AND results > 0;
         """
         print(f"📦 Fetching data for full year {year}...")
 
@@ -126,61 +128,12 @@ def fetch_weekly_data(engine, start_date: datetime, end_date: datetime):
     query = f"""
     SELECT * FROM weekly_campaign_data
     WHERE reporting_starts >= '{start_date.strftime('%Y-%m-%d')}'
-    AND reporting_ends <= '{end_date.strftime('%Y-%m-%d')}';
+    AND reporting_ends <= '{end_date.strftime('%Y-%m-%d')}'
+    AND results > 0;
     """
     return pd.read_sql(query, engine)
 
-def generate_weekly(engine, output_dir, week_start_date: datetime):
-    os.makedirs(output_dir, exist_ok=True)
-    
-    week_end_date = week_start_date + timedelta(days=6)
-    df = fetch_weekly_data(engine, week_start_date, week_end_date)
-
-    if df.empty:
-        print("🚫 No data found for the selected week.")
-        return
-
-    for col in ['link_clicks']:
-        if col not in df.columns:
-            df[col] = 0
-
-    campaign_level = summarize_level(df, ['campaign_name'], 'campaign')
-    adset_level = summarize_level(df, ['campaign_name', 'ad_set_name'], 'ad-set')
-    ad_level = summarize_level(df, ['campaign_name', 'ad_name', 'ad_set_name'], 'ad')
-
-    week_range_str = f"{week_start_date.strftime('%Y-%m-%d')}_to_{week_end_date.strftime('%Y-%m-%d')}"
-    
-    print(f"💾 Saving unified report file for {week_range_str}...")
-
-    # Add identifier columns
-    campaign_level['level'] = 'Campaign'
-    adset_level['level'] = 'Ad Set'
-    ad_level['level'] = 'Ad'
-
-    # Create a list to hold the DataFrames with separators
-    combined_data = []
-
-    # Add campaign data with label
-    combined_data.append(pd.DataFrame([{'level': f'{week_range_str} Campaign Level'}]))  # Add section title
-    combined_data.append(campaign_level)
-
-    # Add adset data with label
-    combined_data.append(pd.DataFrame([{'level': f'{week_range_str} Ad Set Level'}]))  # Add section title
-    combined_data.append(adset_level)
-
-    # Add ad data with label
-    combined_data.append(pd.DataFrame([{'level': f'{week_range_str} Ad Level'}]))  # Add section title
-    combined_data.append(ad_level)
-
-    # Concatenate all into one DataFrame
-    final_combined_df = pd.concat(combined_data, ignore_index=True)
-
-    # Save as one CSV
-    final_combined_df.to_csv(os.path.join(output_dir, f"{week_range_str}_weekly_report.csv"), index=False)
-
-    print("✅ Weekly report generation complete!")
-
-def generate_weekly_report(engine, output_dir, week_start_date: datetime):
+def generate_weekly_report_old(engine, output_dir, week_start_date: datetime):
     try:
         # Create output directory (using pathlib for better path handling)
         output_path = Path(output_dir)
@@ -234,6 +187,63 @@ def generate_weekly_report(engine, output_dir, week_start_date: datetime):
         output_file = output_path / f"{week_range_str}_weekly_report.csv"
         final_combined_df.to_csv(output_file, index=False)
         
+        print(f"✅ Weekly report saved to: {output_file}")
+        return output_file
+
+    except Exception as e:
+        print(f"❌ Error generating weekly report: {str(e)}")
+        raise
+
+def generate_weekly_report(engine, output_dir, week_start_date: datetime):
+    try:
+        output_path = Path(output_dir)
+        output_path.mkdir(parents=True, exist_ok=True)
+        
+        week_end_date = week_start_date + timedelta(days=6)
+        week_range_str = f"{week_start_date.strftime('%Y-%m-%d')}_to_{week_end_date.strftime('%Y-%m-%d')}"
+        print(f"📊 Generating weekly report for {week_range_str}...")
+
+        # Fetch data
+        df = fetch_weekly_data(engine, week_start_date, week_end_date)
+        df = df[df['results'] > 0]  # Filter to keep only rows with results > 0
+
+        if df.empty:
+            print("🚫 No data found for the selected week.")
+            return
+
+        # Ensure required columns exist
+        for col in ['link_clicks']:
+            if col not in df.columns:
+                df[col] = 0
+                print(f"⚠️ Column '{col}' not found - initialized with zeros")
+
+        # Summaries
+        campaign_level = summarize_level(df, ['campaign_name'], 'campaign')
+        adset_level = summarize_level(df, ['campaign_name', 'ad_set_name'], 'ad-set')
+        ad_level = summarize_level(df, ['campaign_name', 'ad_name', 'ad_set_name'], 'ad')
+
+        # Set level identifiers
+        campaign_level['level'] = 'Campaign'
+        adset_level['level'] = 'Ad Set'
+        ad_level['level'] = 'Ad'
+
+        print(f"💾 Saving unified report file for {week_range_str}...")
+
+        output_file = output_path / f"{week_range_str}_weekly_report.xlsx"
+        with pd.ExcelWriter(output_file, engine='xlsxwriter') as writer:
+            # Write to Excel
+            campaign_level.to_excel(writer, sheet_name='Report', startrow=0, index=False)
+            adset_level.to_excel(writer, sheet_name='Report', startrow=len(campaign_level) + 2, index=False)
+            ad_level.to_excel(writer, sheet_name='Report', startrow=len(campaign_level) + len(adset_level) + 4, index=False)
+
+            # Title formatting
+            workbook  = writer.book
+            worksheet = writer.sheets['Report']
+
+            worksheet.write('A1', f'{week_range_str} Campaign Level', workbook.add_format({'bold': True, 'underline': True}))
+            worksheet.write(f'A{len(campaign_level) + 2}', f'{week_range_str} Ad Set Level', workbook.add_format({'bold': True, 'underline': True}))
+            worksheet.write(f'A{len(campaign_level) + len(adset_level) + 4}', f'{week_range_str} Ad Level', workbook.add_format({'bold': True, 'underline': True}))
+
         print(f"✅ Weekly report saved to: {output_file}")
         return output_file
 
