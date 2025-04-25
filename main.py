@@ -6,6 +6,8 @@ from src.reporter.generate_reports import generate_monthly_report, generate_week
 from src.preprocessor.core import preprocess_campaign_data
 from src.analyser.core import analyze_campaign_data_from_db
 from src.database.save import save_to_postgres
+from dotenv import load_dotenv
+
 
 def run_monthly_pipeline(input_path, output_path, engine):
     print(f"\n📅 Running monthly pipeline from {input_path}")
@@ -77,8 +79,14 @@ def main():
     base_data_path = "data"
     base_output_path = "analysis"
 
-    engine = create_engine("postgresql+psycopg2://keith:ArrestedDevelopment@metaad-campaign-db.cl4qg28aywnx.eu-north-1.rds.amazonaws.com:5432/metaads")
+    load_dotenv()
+    user = os.getenv("DB_USER")
+    password = os.getenv("DB_PASSWORD")
+    host = os.getenv("DB_HOST")
+    port = os.getenv("DB_PORT", 5432)
+    database = os.getenv("DB_NAME")
 
+    engine = create_engine(f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}")
     for folder in os.listdir(base_data_path):
         full_input_path = os.path.join(base_data_path, folder)
         full_output_path = os.path.join(base_output_path, folder)
